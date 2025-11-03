@@ -1,0 +1,49 @@
+<div id="edit-link-modal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-[1000]">
+    <div class="modal-content bg-zinc-900 rounded-2xl p-6 border border-zinc-700 shadow-2xl w-full max-w-md mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-indigo-300">Edit link</h3>
+            <button id="close-edit-link" class="text-zinc-400 hover:text-white transition-colors p-1 rounded hover:bg-zinc-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <form id="edit-link-form" class="space-y-4">
+            <label class="text-sm text-zinc-400 mb-2 block">Пароль</label>
+            <div class="relative" style="margin: 0;">
+                <input type="password" name="password" id="edit-link-password" placeholder="Leave empty blank to delete" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 pr-14 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all">
+                <button type="button" onclick="togglePassword(this)" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-zinc-400 hover:text-indigo-300 transition-colors p-1 rounded hover:bg-zinc-700/50 flex items-center justify-center" tabindex="-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke-width="2"></rect>
+                        <circle cx="12" cy="16" r="1" stroke-width="2"></circle>
+                        <path d="m7 11V7a5 5 0 0 1 10 0v4" stroke-width="2"></path>
+                    </svg>
+                </button>
+            </div>
+            <div>
+                <label class="text-sm text-zinc-400 mb-2 block">Expiration date</label>
+                <input type="datetime-local" name="expires_at" id="edit-link-expires" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="text-sm text-zinc-400 mb-2 block">Click limit</label>
+                <input type="number" min="0" name="remaining_clicks" id="edit-link-clicks" placeholder="Without limit" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            </div>
+            <div class="flex items-center gap-2">
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" name="hide_thumbnail" id="edit-link-hide-thumb" class="sr-only peer">
+                    <div class="w-11 h-6 bg-zinc-700 rounded-full peer peer-checked:bg-indigo-600 transition-colors"></div>
+                    <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-5"></div>
+                </label>
+                <label for="edit-link-hide-thumb" class="text-sm text-zinc-400 ml-2">Hide preview</label>
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                    Save
+                </button>
+                <button type="button" id="cancel-edit-link" class="px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded-lg transition-colors">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

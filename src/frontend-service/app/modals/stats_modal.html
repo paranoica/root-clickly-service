@@ -1,0 +1,30 @@
+<div id="stats-modal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-[1000]">
+    <div class="modal-content bg-zinc-900 rounded-2xl p-8 border border-zinc-700 shadow-2xl w-full max-w-6xl mx-2 overflow-y-auto max-h-[92vh] custom-scroll">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-indigo-300">Detailed statistics</h3>
+            <button id="close-stats" class="text-zinc-400 hover:text-white transition-colors p-1 rounded hover:bg-zinc-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="flex flex-col md:flex-row gap-4 mb-4">
+            <div class="flex-1 space-y-2">
+                <label class="text-sm text-zinc-400">Date range</label>
+                <div class="flex gap-2">
+                    <input type="date" id="stats-start-date" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                    <input type="date" id="stats-end-date" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500" />
+                </div>
+            </div>
+            <div class="flex-1 space-y-2">
+                <label class="text-sm text-zinc-400">Date for hourly statistics</label>
+                <input type="date" id="stats-selected-date" class="bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 w-full" />
+            </div>
+            <div class="flex items-end">
+                <button id="stats-apply-filter" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-6 rounded-lg transition-colors">Show</button>
+            </div>
+        </div>
+        <div id="stats-loading" class="text-center text-zinc-400 py-8 hidden">Loading...</div>
+        <div id="stats-content" class="space-y-6"></div>
+    </div>
+</div>

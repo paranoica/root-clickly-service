@@ -1,0 +1,41 @@
+<div id="qr-modal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-[1000]">
+    <div class="modal-content bg-zinc-900 rounded-2xl p-6 border border-zinc-700 shadow-2xl w-full max-w-sm mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-indigo-300">QR-code link</h3>
+            <button id="close-qr"
+                class="text-zinc-400 hover:text-white transition-colors p-1 rounded hover:bg-zinc-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="text-center">
+            <div id="qr-code-container" class="bg-white p-4 rounded-lg mb-4 inline-block">
+                <canvas id="qr-canvas" width="200" height="200" class="hidden"></canvas>
+                <div id="qr-placeholder" class="w-48 h-48 bg-white rounded border-2 border-dashed border-gray-300 flex items-center justify-center">
+                    <div class="text-center text-gray-500">
+                        <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 9l9 6 9-6" />
+                        </svg>
+                        <div class="text-sm">Generating QR-code...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-sm text-zinc-400 mb-4 font-mono bg-zinc-800/50 p-2 rounded" id="qr-url">
+                https://clickly.to/abc123
+            </div>
+
+            <div class="flex gap-2">
+                <button id="download-qr" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

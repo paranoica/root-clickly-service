@@ -1,0 +1,49 @@
+<div id="filter-modal" class="hidden fixed inset-0 modal-backdrop flex items-center justify-center z-[1000]">
+    <div class="modal-content bg-zinc-900 rounded-2xl p-6 border border-zinc-700 shadow-2xl w-full max-w-md mx-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-semibold text-indigo-300">Link filtration</h3>
+            <button id="close-filter" class="text-zinc-400 hover:text-white transition-colors p-1 rounded hover:bg-zinc-800">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="text-sm text-zinc-400 mb-2 block">Period of creation</label>
+                <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <option>All time</option>
+                    <option>Today</option>
+                    <option>This week</option>
+                    <option>This month</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-zinc-400 mb-2 block">Amount of clicks</label>
+                <select class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <option>Any</option>
+                    <option>0 clicks</option>
+                    <option>1-10 clicks</option>
+                    <option>11-100 clicks</option>
+                    <option>100+ clicks</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-sm text-zinc-400 mb-2 block">Domain</label>
+                <input type="text" placeholder="for example, github.com" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button id="apply-filter" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors">
+                    Apply
+                </button>
+                <button id="reset-filter" class="px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 py-2 rounded-lg transition-colors">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
