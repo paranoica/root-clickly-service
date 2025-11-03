@@ -1878,7 +1878,7 @@ function updateStatsBlockById(range) {
         statsArr = clickStatsData.three_month;
 
     let recordValue = 0;
-    let recordDate = "";
+    let recordDate = "15 Jun";
 
     if (statsArr && statsArr.length > 0) {
         let maxItem = statsArr.reduce((max, item) => (item.clicks > max.clicks ? item : max), statsArr[0]); recordValue = maxItem.clicks;
