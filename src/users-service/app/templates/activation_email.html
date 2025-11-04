@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Clickly - Email verification</title>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                background-color: #0a0a0a;
+                color: #e0e0e0;
+            }
+
+            .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #1a1a1a;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+
+            .header {
+                background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+                padding: 40px 30px;
+                text-align: center;
+            }
+
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+                font-weight: 600;
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .logo {
+                width: 40px;
+                height: 40px;
+                background-color: #4f46e5;
+                border-radius: 12px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+
+            .logo svg {
+                width: 24px;
+                height: 24px;
+                stroke: #ffffff;
+                fill: none;
+                stroke-width: 2;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+            }
+
+            .beta-badge {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: #ffffff;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-weight: 500;
+                margin-left: 8px;
+                display: none;
+            }
+
+            .content {
+                padding: 40px 30px;
+            }
+
+            .content h2 {
+                color: #ffffff;
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 20px;
+                margin-top: 0;
+            }
+
+            .content p {
+                color: #b0b0b0;
+                margin-bottom: 20px;
+                font-size: 16px;
+            }
+
+            .button {
+                display: inline-block;
+                background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+                color: #ffffff;
+                padding: 16px 32px;
+                text-decoration: none;
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 16px;
+                margin: 20px 0;
+                transition: all 0.2s ease;
+                border: none;
+                cursor: pointer;
+            }
+
+            .button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .url-box {
+                background-color: #2a2a2a;
+                border: 1px solid #3a3a3a;
+                border-radius: 8px;
+                padding: 16px;
+                margin: 20px 0;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+                color: #8b5cf6;
+                word-break: break-all;
+            }
+
+            .warning {
+                background-color: #2d1b0f;
+                border: 1px solid #8b4513;
+                border-radius: 8px;
+                padding: 16px;
+                margin: 20px 0;
+                color: #ffa500;
+            }
+
+            .warning strong {
+                color: #ff8c00;
+            }
+
+            .footer {
+                background-color: #0f0f0f;
+                text-align: center;
+                padding: 30px;
+                border-top: 1px solid #2a2a2a;
+            }
+
+            .footer p {
+                color: #666;
+                font-size: 14px;
+                margin: 8px 0;
+            }
+
+            .feature-list {
+                display: none;
+            }
+
+            .feature-list h3 {
+                color: #ffffff;
+                margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 18px;
+            }
+
+            .feature-list ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .feature-list li {
+                color: #b0b0b0;
+                margin-bottom: 8px;
+                padding-left: 20px;
+                position: relative;
+            }
+
+            .feature-list li:before {
+                content: "✓";
+                position: absolute;
+                left: 0;
+                color: #8b5cf6;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>
+                    <span class="logo">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                            </path>
+                        </svg>
+                    </span>
+                    Clickly
+                </h1>
+            </div>
+
+            <div class="content">
+                <h2>Hello, {{ username }}! 👋</h2>
+
+                <p>Welcome to <strong>Clickly</strong> — a modern service for instantly shortening, storing, and tracking your links.</p>
+                <p>To complete registration and activate all the features of your account, please confirm your email address:</p>
+
+                <div class="center">
+                    <a href="{{ activation_url }}" class="button">Verify email</a>
+                </div>
+
+                <p>If the button does not work, copy and paste this link into your browser:</p>
+                <div class="url-box">{{ activation_url }}</div>
+
+                <div class="warning">
+                    <strong>⚠️ Important:</strong> This link is valid for 24 hours. If you don't confirm your
+                    email within this time, you will need to request a new activation link.
+                </div>
+
+                <p><strong>Note:</strong> You will not be able to log in until your email is confirmed.</p>
+                <p>If you haven't registered with Clickly, simply ignore this email.</p>
+            </div>
+
+            <div class="footer">
+                <p><strong>© 2025 Clickly.</strong> All rights reserved.</p>
+                <p>Secure. Simple. Free.</p>
+                <p style="margin-top: 20px;">This email was sent automatically, please do not reply.</p>
+            </div>
+        </div>
+    </body>
+</html>
