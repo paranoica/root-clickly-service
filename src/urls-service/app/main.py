@@ -23,6 +23,7 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Database initialization failed: {e}")
         raise
+    yield
     logger.info("Shutting down URL-service...")
 
 app = FastAPI(
