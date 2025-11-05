@@ -49,7 +49,7 @@ async def admin_overview(
     session: SessionDep, # type: ignore
     admin_verified: bool = Depends(verify_admin_token)
 ):
-    now = datetime.utcnow()
+    now = datetime.now()
     
     total_clicks = session.exec(select(func.count(ClickEvent.id))).first() or 0
     unique_ips = session.exec(select(func.count(func.distinct(ClickEvent.ip_address)))).first() or 0
@@ -73,7 +73,7 @@ async def admin_detailed_stats(
     end_date: Optional[str] = None,
     selected_date: Optional[str] = None
 ):
-    now = datetime.utcnow()
+    now = datetime.now()
     base_query, start_dt, end_dt = build_filtered_query(session, url_id, user_id, start_date, end_date)
     
     events = session.exec(base_query).all()
