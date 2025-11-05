@@ -19,12 +19,14 @@ Built on a microservices architecture, Clickly provides scalability, flexibility
 
 ## Project Structure
 
+```bash
 └── src
     ├── analytics-service # Analytics service (tracks URL visits and metrics)
     ├── urls-service # URL shortening and redirection service
     ├── frontend-service # User management and authentication service
     ├── users-service # Client application (SPA)
     ├── docker-compose.yml # Docker Compose configuration for all services
+```
 
 Each microservice contains its own business logic, API endpoints, database models, and schemas. Services communicate over HTTP within the Docker network. Traefik handles load balancing and routing.
 
@@ -116,6 +118,7 @@ Create a .env file inside each service folder (users-service, url-service, analy
 
 ![Frontend Preview](./assets/preview.png)
 
+**LANGUAGE WAS SWITCHED TO ENGLISH IN PRODUCTION**
 ---
 
 ## Additional Notes
