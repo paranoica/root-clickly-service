@@ -1,0 +1,252 @@
+services:
+  traefik:
+    image: traefik:v3.0
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - clickly_network
+
+  users_db:
+    image: postgres:15
+    container_name: clickly_users_db
+    environment:
+      POSTGRES_USER: ${USERS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${USERS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${USERS_POSTGRES_DB}
+    ports:
+      - "${USERS_POSTGRES_PORT}:5432"
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${USERS_POSTGRES_USER} -d ${USERS_POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - clickly_network
+
+  url_db:
+    image: postgres:15
+    container_name: clickly_url_db
+    environment:
+      POSTGRES_USER: ${URL_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${URL_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${URL_POSTGRES_DB}
+    ports:
+      - "${URL_POSTGRES_PORT}:5432"
+    volumes:
+      - url_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${URL_POSTGRES_USER} -d ${URL_POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - clickly_network
+
+  analytics_db:
+    image: postgres:15
+    container_name: clickly_analytics_db
+    environment:
+      POSTGRES_USER: ${ANALYTICS_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${ANALYTICS_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${ANALYTICS_POSTGRES_DB}
+    ports:
+      - "${ANALYTICS_POSTGRES_PORT}:5432"
+    volumes:
+      - analytics_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ANALYTICS_POSTGRES_USER} -d ${ANALYTICS_POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - clickly_network
+
+  users_service:
+    build: ./users-service
+    container_name: clickly_users_service
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: ${USERS_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      RATE_LIMIT_GENERAL: ${USERS_RATE_LIMIT_GENERAL}
+      RATE_LIMIT_STRICT: ${RATE_LIMIT_STRICT}
+      RATE_LIMIT_AUTH: ${RATE_LIMIT_AUTH}
+      SMTP_SERVER: ${SMTP_SERVER}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_USE_TLS: ${SMTP_USE_TLS}
+      FROM_EMAIL: ${FROM_EMAIL}
+      FRONTEND_URL: ${FRONTEND_URL}
+      EMAIL_ACTIVATION_TOKEN_EXPIRE_HOURS: ${EMAIL_ACTIVATION_TOKEN_EXPIRE_HOURS}
+      EMAIL_ACTIVATION_RESEND_COOLDOWN_MINUTES: ${EMAIL_ACTIVATION_RESEND_COOLDOWN_MINUTES}
+    depends_on:
+      users_db:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.users.rule=PathPrefix(`/api/users`)
+      - traefik.http.routers.users.entrypoints=web
+      - traefik.http.services.users.loadbalancer.server.port=8000
+      - traefik.http.middlewares.users-strip.stripprefix.prefixes=/api/users
+      - traefik.http.routers.users.middlewares=users-strip
+    networks:
+      - clickly_network
+    restart: unless-stopped
+
+  url_service:
+    build: ./urls-service
+    container_name: clickly_url_service
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: ${URL_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      USERS_SERVICE_URL: ${USERS_SERVICE_URL}
+      ANALYTICS_SERVICE_URL: ${ANALYTICS_SERVICE_URL}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      RATE_LIMIT_GENERAL: ${URL_RATE_LIMIT_GENERAL}
+      RATE_LIMIT_STRICT: ${RATE_LIMIT_STRICT}
+      RATE_LIMIT_AUTH: ${RATE_LIMIT_AUTH}
+      GOOGLE_SAFE_BROWSING_API_KEY: ${GOOGLE_SAFE_BROWSING_API_KEY}
+      SAFE_BROWSING_ENABLED: ${SAFE_BROWSING_ENABLED}
+      MAX_URL_LENGTH: ${MAX_URL_LENGTH}
+      SHORT_CODE_LENGTH: ${SHORT_CODE_LENGTH}
+    depends_on:
+      url_db:
+        condition: service_healthy
+      users_service:
+        condition: service_started
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.urls.rule=PathPrefix(`/api/urls`)
+      - traefik.http.routers.urls.entrypoints=web
+      - traefik.http.services.urls.loadbalancer.server.port=8001
+      - traefik.http.middlewares.urls-strip.stripprefix.prefixes=/api/urls
+      - traefik.http.routers.urls.middlewares=urls-strip
+      - traefik.http.routers.redirect.rule=PathPrefix(`/r/`)
+      - traefik.http.routers.redirect.entrypoints=web
+      - traefik.http.routers.redirect.service=urls
+    networks:
+      - clickly_network
+    restart: unless-stopped
+
+  analytics_service:
+    build: ./analytics-service
+    container_name: clickly_analytics_service
+    ports:
+      - "8003:8003"
+    environment:
+      DATABASE_URL: ${ANALYTICS_DATABASE_URL}
+      SECRET_KEY: ${SECRET_KEY}
+      USERS_SERVICE_URL: ${USERS_SERVICE_URL}
+      URL_SERVICE_URL: ${URL_SERVICE_URL}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      RATE_LIMIT_ENABLED: ${RATE_LIMIT_ENABLED}
+      RATE_LIMIT_GENERAL: ${ANALYTICS_RATE_LIMIT_GENERAL}
+      RATE_LIMIT_STRICT: ${RATE_LIMIT_STRICT}
+      RATE_LIMIT_AUTH: ${RATE_LIMIT_AUTH}
+      MAX_EXPORT_RECORDS: ${MAX_EXPORT_RECORDS}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+    depends_on:
+      analytics_db:
+        condition: service_healthy
+      users_service:
+        condition: service_started
+      url_service:
+        condition: service_started
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.analytics.rule=PathPrefix(`/api/analytics`)
+      - traefik.http.routers.analytics.entrypoints=web
+      - traefik.http.services.analytics.loadbalancer.server.port=8003
+      - traefik.http.middlewares.analytics-strip.stripprefix.prefixes=/api/analytics
+      - traefik.http.routers.analytics.middlewares=analytics-strip
+    networks:
+      - clickly_network
+    restart: unless-stopped
+
+  url_cleanup:
+    build: ./urls-service
+    container_name: clickly_url_cleanup
+    command: python cleanup_scheduler.py
+    environment:
+      URL_SERVICE_URL: ${URL_SERVICE_URL}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+    depends_on:
+      url_service:
+        condition: service_started
+    networks:
+      - clickly_network
+    restart: unless-stopped
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    environment:
+      URLS: >
+        [
+          { "url": "/api/users/openapi.json",     "name": "Users API" },
+          { "url": "/api/urls/openapi.json",      "name": "URL API" },
+          { "url": "/api/analytics/openapi.json", "name": "Analytics API" }
+        ]
+      URLS_PRIMARY_NAME: "Users API"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.docs.rule=PathPrefix(`/docs`)
+      - traefik.http.middlewares.docs-addslash.redirectregex.regex=^/docs$
+      - traefik.http.middlewares.docs-addslash.redirectregex.replacement=/docs/
+      - traefik.http.middlewares.docs-strip.stripprefix.prefixes=/docs
+      - traefik.http.routers.docs.middlewares=docs-addslash,docs-strip
+      - traefik.http.services.docs.loadbalancer.server.port=8080
+    networks: [clickly_network]
+
+  frontend:
+    build: ./frontend-service
+    container_name: clickly_frontend
+    command: python app/server.py
+    ports:
+      - "3000:3000"
+    depends_on:
+      users_service:
+        condition: service_started
+      url_service:
+        condition: service_started
+      analytics_service:
+        condition: service_started
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=PathPrefix(`/`)
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.routers.frontend.priority=1
+      - traefik.http.services.frontend.loadbalancer.server.port=3000
+    networks:
+      - clickly_network
+    restart: unless-stopped
+
+volumes:
+  users_db_data:
+  url_db_data:
+  analytics_db_data:
+
+networks:
+  clickly_network:
+    driver: bridge
