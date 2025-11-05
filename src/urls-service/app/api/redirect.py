@@ -73,7 +73,7 @@ async def redirect_url(
     if not url.is_active:
         raise HTTPException(status_code=410, detail="URL is no longer active")
     
-    if url.expires_at and datetime.utcnow() > url.expires_at:
+    if url.expires_at and datetime.now() > url.expires_at:
         url.is_active = False
 
         session.add(url)

@@ -13,7 +13,7 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 @router.get("/users/stats")
 async def get_users_stats_summary(session: SessionDep, admin_verified: bool = Depends(verify_admin_token)): # type: ignore
     total_users = session.exec(select(func.count(User.id))).first() or 0
-    month_ago = datetime.utcnow() - timedelta(days=30)
+    month_ago = datetime.now() - timedelta(days=30)
 
     active_users_query = select(func.count(User.id)).where(
         User.is_active == True,
@@ -22,7 +22,7 @@ async def get_users_stats_summary(session: SessionDep, admin_verified: bool = De
 
     active_month = session.exec(active_users_query).first() or 0
     
-    today = datetime.utcnow().date()
+    today = datetime.now().date()
     today_users_query = select(func.count(User.id)).where(
         func.date(User.created_at) == today
     )

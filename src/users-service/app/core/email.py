@@ -24,7 +24,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class EmailService:
     def create_password_reset_token(self, email: str, token_version: int) -> str:
-        expire = datetime.utcnow() + timedelta(hours=2)
+        expire = datetime.now() + timedelta(hours=2)
         payload = {
             "email": email,
             "exp": expire,
@@ -99,7 +99,7 @@ class EmailService:
             logger.warning(f"Template directory not found: {template_dir}")
     
     def create_email_activation_token(self, email: str) -> str:
-        expire = datetime.utcnow() + timedelta(hours=EMAIL_ACTIVATION_TOKEN_EXPIRE_HOURS)
+        expire = datetime.now() + timedelta(hours=EMAIL_ACTIVATION_TOKEN_EXPIRE_HOURS)
         payload = {
             "email": email,
             "exp": expire,

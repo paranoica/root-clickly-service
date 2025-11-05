@@ -79,7 +79,7 @@ def create_user(session: Session, user: UserCreate) -> User:
         success = email_service.send_activation_email(db_user.email, db_user.username)
         
         if success:
-            db_user.last_email_sent = datetime.utcnow()
+            db_user.last_email_sent = datetime.now()
 
             session.add(db_user)
 
@@ -129,7 +129,7 @@ def update_user(session: Session, current_user: User, user_update: UserUpdate) -
     if invalidate_tokens:
         current_user.token_version += 1
 
-    current_user.updated_at = datetime.utcnow()
+    current_user.updated_at = datetime.now()
     session.add(current_user)
     
     session.commit()
@@ -200,7 +200,7 @@ def activate_user_email(session: Session, email: str) -> User:
     user = get_user_by_email(session, email)
 
     user.email_verified = True
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now()
 
     session.add(user)
     session.commit()
@@ -213,14 +213,14 @@ def can_send_email(session: Session, user: User) -> bool:
         return True
     
     cooldown_time = user.last_email_sent + timedelta(minutes=EMAIL_ACTIVATION_RESEND_COOLDOWN_MINUTES)
-    return datetime.utcnow() > cooldown_time
+    return datetime.now() > cooldown_time
 
 def get_email_cooldown_remaining(session: Session, user: User) -> int:
     if user.last_email_sent is None:
         return 0
     
     cooldown_time = user.last_email_sent + timedelta(minutes=EMAIL_ACTIVATION_RESEND_COOLDOWN_MINUTES)
-    remaining = cooldown_time - datetime.utcnow()
+    remaining = cooldown_time - datetime.now()
 
     if remaining.total_seconds() <= 0:
         return 0
@@ -228,7 +228,7 @@ def get_email_cooldown_remaining(session: Session, user: User) -> int:
     return int(remaining.total_seconds() / 60) + 1
 
 def mark_email_sent(session: Session, user: User):
-    user.last_email_sent = datetime.utcnow()
+    user.last_email_sent = datetime.now()
 
     session.add(user)
     session.commit()
@@ -283,7 +283,7 @@ def reset_password_confirm(session: Session, token: str, new_password: str) -> N
     
     user.hashed_password = get_password_hash(new_password)
     user.token_version += 1
-    user.updated_at = datetime.utcnow()
+    user.updated_at = datetime.now()
     
     session.add(user)
     session.commit()

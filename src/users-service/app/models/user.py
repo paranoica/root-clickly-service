@@ -18,5 +18,5 @@ class User(SQLModel, table=True):
     last_email_sent: Optional[datetime] = Field(default=None)
     token_version: int = Field(default=1)
     
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.now)
     updated_at: Optional[datetime] = Field(default=None)

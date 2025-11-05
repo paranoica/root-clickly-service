@@ -17,7 +17,7 @@ class Url(SQLModel, table=True):
     remaining_clicks: Optional[int] = Field(default=None)
     hide_thumbnail: bool = Field(default=False)
 
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.now)
     expires_at: Optional[datetime] = Field(default=None)
     
     safety_check_status: Optional[str] = Field(default=None)

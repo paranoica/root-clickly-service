@@ -48,7 +48,7 @@ async def get_urls_stats_summary(
     admin_verified: bool = Depends(verify_admin_token)
 ):
     total_urls = session.exec(select(func.count(Url.id))).first() or 0
-    today = datetime.utcnow().date()
+    today = datetime.now().date()
 
     today_urls_query = select(func.count(Url.id)).where(func.date(Url.created_at) == today)
     today_urls = session.exec(today_urls_query).first() or 0
@@ -283,7 +283,7 @@ async def security_scan_urls(
                 import json
                 
                 url.safety_check_status = "safe" if safety_check["is_safe"] else "unsafe"
-                url.safety_check_at = datetime.utcnow()
+                url.safety_check_at = datetime.now()
                 url.safety_threats = json.dumps(safety_check["threats"]) if safety_check["threats"] else None
                 
                 result = {
@@ -310,7 +310,7 @@ async def security_scan_urls(
                 logger.error(f"Error scanning URL {url.id}: {str(e)}")
 
                 url.safety_check_status = "error"
-                url.safety_check_at = datetime.utcnow()
+                url.safety_check_at = datetime.now()
 
                 session.add(url)
                 

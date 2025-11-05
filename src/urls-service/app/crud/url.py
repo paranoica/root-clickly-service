@@ -59,7 +59,7 @@ async def create_url(session: Session, url_data: UrlCreate, user_id: int) -> Url
         remaining_clicks=url_data.remaining_clicks,
         hide_thumbnail=url_data.hide_thumbnail,
         safety_check_status=safety_status,
-        safety_check_at=datetime.utcnow(),
+        safety_check_at=datetime.now(),
         safety_threats=safety_threats
     )
     
@@ -148,7 +148,7 @@ def decrement_clicks_count(session: Session, url: Url) -> None:
 
 def check_and_deactivate_expired_urls(session: Session, user_id: Optional[int] = None) -> int:
     query = select(Url).where(
-        Url.expires_at <= datetime.utcnow(),
+        Url.expires_at <= datetime.now(),
         Url.is_active == True
     )
     
